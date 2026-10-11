@@ -35,7 +35,7 @@ const BANNED_PACKAGES = [
   [/^@next\/swc-/, 'Next.js SWC binary'],
   [/^sass-embedded($|-)/, 'Dart Sass embedded binary (use `sass`)'],
   [/^@typescript\/(typescript|native-preview)-/, 'TypeScript 7+ native compiler (pin typescript 5.x)'],
-  [/^@pnpm\/exe$|^@pnpm\/(linux|win|macos)-/, 'pnpm standalone executable'],
+  [/^@pnpm\/exe($|\.)|^@pnpm\/(linux|win|macos)-/, 'pnpm native executable (pnpm 12+ / standalone)'],
   [/^keytar$|^@azure\/msal-node-(runtime|extensions)$/, 'native credential store (Power Apps CLI dependency)'],
   [/^node-gyp-build$|^prebuild-install$|^node-pre-gyp$|^@mapbox\/node-pre-gyp$/, 'native addon loader/installer'],
   // Generic "<name>-<os>-<cpu>[-libc]" platform package convention.
