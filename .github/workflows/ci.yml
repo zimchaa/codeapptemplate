@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v7
+
+      # Installs the pnpm version from package.json "packageManager" as the
+      # plain JS package (standalone: false is the default; never use the
+      # @pnpm/exe native build).
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: Install (frozen lockfile, install scripts blocked)
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify no native binaries
+        run: pnpm verify:no-native
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Build
+        run: pnpm build
+
+      - name: Dev server smoke test
+        run: pnpm smoke:dev
+
+      # Re-install as if on a Windows x64/arm64 laptop and re-check. Catches
+      # Windows-only optional/platform packages from the Linux runner too.
+      - name: Windows-targeted install check
+        if: runner.os == 'Linux'
+        run: |
+          pnpm install --force --frozen-lockfile \
+            --config.supportedArchitectures.os=win32 \
+            --config.supportedArchitectures.cpu=x64 \
+            --config.supportedArchitectures.cpu=arm64
+          pnpm verify:no-native
