@@ -16,7 +16,7 @@
     "verify:no-native": "node scripts/verify-no-native.mjs",
     "smoke:dev": "node scripts/smoke-dev.mjs apps/app-template",
     "new-app": "node scripts/new-app.mjs",
-    "ci": "pnpm verify:no-native && pnpm lint && pnpm typecheck && pnpm build && pnpm smoke:dev"
+    "check": "pnpm verify:no-native && pnpm lint && pnpm typecheck && pnpm build && pnpm smoke:dev"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
