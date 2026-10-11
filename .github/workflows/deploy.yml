@@ -1,0 +1,70 @@
+name: Deploy code app
+
+# Manual only. Publishes one app with `pa app push` using a service principal,
+# so nobody needs the Power Apps CLI (which has native dependencies) on a
+# locked-down laptop. See README.md > "Deploying".
+#
+# One-time setup:
+#   1. The app was initialised (`pa app init`) and published once by a maker,
+#      and apps/<app>/power.config.json (with its appId) is committed.
+#   2. The maker ran: pa app share --principal <enterprise-app-object-id> --access edit
+#   3. Repository (or "power-platform" environment) secrets:
+#        PA_CLI_SP_CLIENT_ID, PA_CLI_SP_CLIENT_SECRET, PA_CLI_SP_TENANT_ID
+#      Optional variable: PA_CLI_SOLUTION_ID
+
+on:
+  workflow_dispatch:
+    inputs:
+      app:
+        description: Folder name under apps/ to deploy
+        required: true
+        default: app-template
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: power-platform
+    env:
+      APP: ${{ inputs.app }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+
+      - name: Install pnpm
+        run: npm install --global "$(node -p "require('./package.json').packageManager")"
+
+      - name: Check app folder and power.config.json
+        run: |
+          if ! [[ "$APP" =~ ^[a-z][a-z0-9-]*$ ]] || [ ! -d "apps/$APP" ]; then
+            echo "::error::apps/$APP does not exist"; exit 1
+          fi
+          if [ ! -f "apps/$APP/power.config.json" ]; then
+            echo "::error::apps/$APP/power.config.json is missing. Run 'pa app init' and 'pa app push' once as a maker and commit the file."; exit 1
+          fi
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm verify:no-native
+      - run: pnpm --filter "./apps/$APP" build
+
+      # The CLI is installed only on the runner, never into the workspace.
+      - name: Install Power Apps CLI
+        run: npm install --global @microsoft/power-apps-cli@1.2.0
+
+      - name: Publish
+        working-directory: apps/${{ inputs.app }}
+        env:
+          PA_CLI_USE_SP_AUTH: 'true'
+          PA_CLI_SP_CLIENT_ID: ${{ secrets.PA_CLI_SP_CLIENT_ID }}
+          PA_CLI_SP_CLIENT_SECRET: ${{ secrets.PA_CLI_SP_CLIENT_SECRET }}
+          PA_CLI_SP_TENANT_ID: ${{ secrets.PA_CLI_SP_TENANT_ID }}
+          PA_CLI_SOLUTION_ID: ${{ vars.PA_CLI_SOLUTION_ID }}
+        run: |
+          # An empty PA_CLI_SOLUTION_ID would be rejected as an invalid GUID.
+          if [ -z "$PA_CLI_SOLUTION_ID" ]; then unset PA_CLI_SOLUTION_ID; fi
+          pa app push --non-interactive
