@@ -1,0 +1,22 @@
+{
+  "name": "@codeapps/data",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Data-service interface with a mock (offline) and a Power Apps implementation.",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts",
+    "./mock": "./src/mock.ts",
+    "./powerapps": "./src/powerapps.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@microsoft/power-apps": "1.5.0"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3"
+  }
+}
