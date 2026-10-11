@@ -1,0 +1,35 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--codeapps-border, #d1d1d1);
+  border-left-width: 4px;
+  border-radius: 8px;
+  background: var(--codeapps-surface, #ffffff);
+  color: inherit;
+  text-align: left;
+}
+
+.title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.body {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.info {
+  border-left-color: #0f6cbd;
+}
+
+.success {
+  border-left-color: #107c10;
+}
+
+.warning {
+  border-left-color: #bc4b09;
+}
