@@ -1,0 +1,30 @@
+{
+  "name": "codeapps-monorepo",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "packageManager": "pnpm@10.34.6",
+  "engines": {
+    "node": ">=22.12.0",
+    "pnpm": ">=10.0.0 <11"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @codeapps/app-template dev",
+    "build": "pnpm -r --filter \"./apps/*\" build",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "eslint .",
+    "verify:no-native": "node scripts/verify-no-native.mjs",
+    "smoke:dev": "node scripts/smoke-dev.mjs apps/app-template",
+    "new-app": "node scripts/new-app.mjs",
+    "ci": "pnpm verify:no-native && pnpm lint && pnpm typecheck && pnpm build && pnpm smoke:dev"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "eslint": "10.12.0",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "eslint-plugin-react-refresh": "0.5.7",
+    "globals": "17.13.0",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.71.1"
+  }
+}

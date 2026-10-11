@@ -1,0 +1,34 @@
+packages:
+  - apps/*
+  - packages/*
+
+# ---------------------------------------------------------------------------
+# Native-binary-free toolchain. Read "Corporate laptop pitfalls" in README.md
+# before changing anything in this file.
+# ---------------------------------------------------------------------------
+
+# Swap every native toolchain binary for its WebAssembly build.
+# - esbuild: Vite 7.3 accepts ^0.27 || ^0.28; esbuild-wasm is the same API
+#   with no platform-specific @esbuild/* package or esbuild.exe.
+# - rollup: @rollup/wasm-node is the same API with no @rollup/rollup-* .node
+#   binding.
+# - fsevents: macOS-only native file watcher pulled in optionally by Vite.
+#   Removed so the lockfile is identical (and binary-free) on every OS.
+# - @napi-rs/lzma-linux-x64-gnu: native .node file that @rollup/wasm-node
+#   >=4.63.0 lists as an optional dependency (Linux x64 only) but never
+#   imports. Removed so CI/WSL installs stay binary-free too.
+overrides:
+  esbuild: npm:esbuild-wasm@0.28.2
+  rollup: npm:@rollup/wasm-node@4.64.5
+  fsevents: '-'
+  '@napi-rs/lzma-linux-x64-gnu': '-'
+
+# pnpm 10 blocks dependency install/postinstall scripts by default. Keep the
+# allow-list empty: nothing in this repo needs to compile or download
+# anything at install time. If you ever must add an entry, document why in
+# README.md ("Allowed install scripts").
+onlyBuiltDependencies: []
+
+# Fail the install (instead of silently skipping) if a newly added dependency
+# wants to run an install script, so the problem is noticed immediately.
+strictDepBuilds: true
