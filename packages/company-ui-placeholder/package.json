@@ -1,0 +1,21 @@
+{
+  "name": "@placeholder/company-ui",
+  "version": "0.0.0-placeholder",
+  "private": true,
+  "description": "PLACEHOLDER for the internal company component library. Not a real package. See docs/internal-component-library.md.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.tsx"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0 || ^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0",
+    "react": "19.3.0",
+    "typescript": "5.9.3"
+  }
+}
