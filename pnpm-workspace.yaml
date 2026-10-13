@@ -1,6 +1,7 @@
 packages:
   - apps/*
   - packages/*
+  - modules/*
 
 # ---------------------------------------------------------------------------
 # Native-binary-free toolchain. Read "Corporate laptop pitfalls" in README.md

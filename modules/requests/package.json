@@ -1,0 +1,29 @@
+{
+  "name": "@codeapps/module-requests",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Workspace module: raise, track, assign and discuss requests. Deep-linkable from email and Teams.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./schema": "./src/schema.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@codeapps/platform": "workspace:*",
+    "@codeapps/ui": "workspace:*",
+    "lucide-react": "1.56.0",
+    "react-router": "8.4.0"
+  },
+  "peerDependencies": {
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0",
+    "react": "19.3.0",
+    "typescript": "5.9.3"
+  }
+}

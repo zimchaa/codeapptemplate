@@ -3,6 +3,7 @@
 // component library (see docs/workspace/ui-and-theming.md).
 
 export { cn } from './lib/cn.ts'
+export { formatDate, formatDateTime, timeAgo, todayIso } from './lib/format.ts'
 export { ThemeProvider, useTheme, themeNames } from './theme/ThemeProvider.tsx'
 export type { ThemeMode, ThemeName, ThemeProviderProps } from './theme/ThemeProvider.tsx'
 
