@@ -16,14 +16,23 @@ JavaScript and WebAssembly.** Details and deviations:
 
 ```
 apps/
-  app-template/            the code app (copy it with `pnpm new-app`)
+  app-template/            minimal code app (copy it with `pnpm new-app`)
+  workspace/               ★ single pane of glass: modules, RBAC, deep links, Dataverse
 packages/
-  components/              @codeapps/components: shared React components
-  data/                    @codeapps/data: DataService + mock + Power Apps impl
+  platform/                @codeapps/platform: workspace framework (modules, access, router, data, shell)
+  ui/                      @codeapps/ui: Tailwind 3 kit + themes (foundation-red, neutral)
+  components/              @codeapps/components: shared React components (app-template)
+  data/                    @codeapps/data: DataService + mock + Power Apps impl (app-template)
   company-ui-placeholder/  ⚠️ PLACEHOLDER for the internal company library
-scripts/                   verify-no-native, smoke-dev, new-app (plain Node)
-docs/                      alignment notes, company library guide, webpack fallback
+modules/                   workspace modules: admin, requests, announcements, links (`pnpm new-module`)
+scripts/                   verify-no-native, smoke-dev, new-app, new-module, dataverse/ (plain Node)
+docs/                      alignment notes, company library guide, webpack fallback, workspace/
 ```
+
+> **Building a multi-function app?** Start with [`apps/workspace`](apps/workspace/README.md), a
+> single-pane-of-glass shell where functionality is added as modules. It has role-based access, an
+> admin area, deep links for email and Teams, and a Dataverse back end with a provisioning script.
+> Framework docs: [`docs/workspace`](docs/workspace/README.md).
 
 ---
 
@@ -66,9 +75,14 @@ Run from the repo root:
 | `pnpm typecheck` | `tsc` across all packages and apps |
 | `pnpm lint` | ESLint (same rules as the official template) |
 | `pnpm verify:no-native` | Fail if any native binary or platform package is installed **or in the lockfile** |
-| `pnpm smoke:dev` | Start the dev server headlessly and check it serves transformed TSX |
+| `pnpm smoke:dev` | Start each app's dev server headlessly and check it serves transformed TSX |
+| `pnpm test` | Unit tests (Vitest for packages/apps, `node:test` for scripts) |
 | `pnpm check` | Everything CI runs, in order |
 | `pnpm new-app <name>` | Create `apps/<name>` from the template |
+| `pnpm new-module <id>` | Create a workspace module in `modules/<id>` |
+| `pnpm --filter @codeapps/workspace dev` | Run the workspace app offline (mock data, persona switcher) |
+| `pnpm dataverse:plan` | Validate the workspace Dataverse schema and print the plan (no sign-in) |
+| `pnpm dataverse:provision --url … --admin …` | Create the workspace tables + seed data in an environment |
 
 ### Data modes (offline vs Power Apps)
 
@@ -205,7 +219,8 @@ for code-app-sized projects a build takes a few seconds (≈3 s in CI).
 | `@vitejs/plugin-react-swc`, `@swc/*` | native SWC | `@vitejs/plugin-react` 5.x (Babel) |
 | `@vitejs/plugin-react` 6+ | built for Vite 8 / oxc | 5.x |
 | TypeScript 7 (`typescript@latest`!) | native Go compiler (`@typescript/typescript-win32-x64`) | `typescript@5.9.x` |
-| Tailwind CSS v4 / `@tailwindcss/vite` / `@tailwindcss/oxide` | native oxide engine + Lightning CSS | plain CSS, CSS modules, or Fluent UI v9 |
+| Tailwind CSS v4 / `@tailwindcss/vite` / `@tailwindcss/oxide` | native oxide engine + Lightning CSS | **Tailwind 3.4** + PostCSS (pure JS, used by `apps/workspace`), plain CSS, CSS modules, or Fluent UI v9 |
+| `tailwind-merge` 3+ | targets Tailwind v4 class names | `tailwind-merge` 2.x |
 | `lightningcss`, `css.transformer: 'lightningcss'`, `build.cssMinify: 'lightningcss'` | native | Vite defaults (PostCSS + esbuild-wasm) |
 | `sass-embedded` | bundles the Dart VM executable | `sass` (pure JS) |
 | `sharp`, `vite-imagetools`, image optimisers | native libvips | pre-optimised assets |
@@ -247,6 +262,10 @@ explains three ways to swap in the real library:
 
 Never commit tokens.
 
+For `apps/workspace`, the component library plugs in behind `@codeapps/ui`
+rather than the placeholder adapter. See
+[UI and theming](docs/workspace/ui-and-theming.md).
+
 ## Using this repo as a GitHub template
 
 This repository is marked as a **template repository**. Click
@@ -269,3 +288,9 @@ This repository is marked as a **template repository**. Click
   `createPowerAppsDataService`, and `createDataService(mode)`. Each
   implementation is loaded with a dynamic import, so a mock-only bundle never
   loads the Power Apps client and vice versa.
+- **`@codeapps/platform`**: the workspace framework (module contract,
+  capability-based access control, hash router with deep links, mock and
+  Dataverse data providers, app shell). See [docs/workspace](docs/workspace/README.md).
+- **`@codeapps/ui`**: Tailwind 3.4 preset, theme tokens and components.
+  This is the single swap point for an internal component library; see
+  [UI and theming](docs/workspace/ui-and-theming.md#swapping-in-an-internal-component-library-eg-sourceweb-react).

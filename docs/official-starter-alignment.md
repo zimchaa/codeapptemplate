@@ -23,7 +23,8 @@ Re-check these when upgrading. The table shows what to compare.
 | TypeScript | `~5.9.3` | `5.9.3` | `typescript@latest` is now 7.x = native Go compiler. typescript-eslint also requires `<6.1`. |
 | ESLint | `^9.39.1` | `10.12.0` | 9.x is now deprecated; all plugins support 10. Pure JS either way. |
 | Package manager | npm | pnpm `10.34.6` | Workspaces + overrides + install-script control. pnpm 12 is a native exe. |
-| Styling | plain CSS (`vite`); Tailwind v4 (`starter`) | plain CSS / CSS modules | Tailwind v4 needs `@tailwindcss/oxide` (native). |
+| Styling | plain CSS (`vite`); Tailwind v4 (`starter`) | plain CSS / CSS modules (`app-template`); Tailwind **3.4** (`workspace`) | Tailwind v4 needs `@tailwindcss/oxide` (native); v3 is pure JS. |
+| Router | none (`vite`); React Router 7 (`starter`) | React Router 8 hash router (`workspace`) | The app runs in the player's iframe; external deep links arrive via `getContext().app.queryParams`, as in the official `DataverseContextRouting` sample. |
 | CLI | `pa` from `@microsoft/power-apps-cli` (installed globally) | same, **kept out of the workspace** | It depends on native modules (see below). |
 
 The `starter` template's extra libraries (Radix, TanStack Query/Table,
