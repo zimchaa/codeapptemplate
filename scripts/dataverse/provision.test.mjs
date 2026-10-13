@@ -6,6 +6,7 @@ import { spawn } from 'node:child_process'
 import { createServer } from 'node:http'
 import { resolve } from 'node:path'
 import { after, before, test } from 'node:test'
+import { tables } from '../../apps/workspace/src/workspace.schema.ts'
 
 const script = resolve(import.meta.dirname, 'provision.mjs')
 
@@ -119,7 +120,7 @@ test('first run creates everything and seeds', async () => {
   assert.equal(code, 0, out)
   const { state } = fake
   assert.equal(state.publishers[0].customizationprefix, 'spg')
-  assert.equal(state.entities.size, 9)
+  assert.equal(state.entities.size, tables.length)
   assert.ok(state.entities.get('spg_request').attributes.has('spg_status'))
   assert.ok(state.relationships.has('spg_request_requestcomment_request'))
   assert.equal(state.published, 1)
