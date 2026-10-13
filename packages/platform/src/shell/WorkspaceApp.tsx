@@ -1,4 +1,4 @@
-import { Alert, ThemeProvider, ToastProvider, TooltipProvider, type ThemeName } from '@codeapps/ui'
+import { Alert, ThemeProvider, ToastProvider, TooltipProvider, useToast, type ThemeName } from '@codeapps/ui'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { RouterProvider } from 'react-router'
 import { hasCapability } from '../access/capabilities.ts'
@@ -38,6 +38,7 @@ function WorkspaceRoot({ config }: { config: WorkspaceConfig }) {
   const [state, setState] = useState<{ runtime?: WorkspaceRuntime; error?: unknown }>({})
   const router = useMemo(() => createWorkspaceRouter(config.modules), [config.modules])
   const deepLinkApplied = useRef(false)
+  const { toast } = useToast()
 
   useEffect(() => {
     let cancelled = false
@@ -68,7 +69,19 @@ function WorkspaceRoot({ config }: { config: WorkspaceConfig }) {
     const isModuleEnabled = (id: string) => runtime.moduleStates.get(id)?.enabled ?? true
     const setting = (key: string) => runtime.settings.get(key) || undefined
     const registeredModules = sortModules(config, runtime)
+    // Offline, notifications are shown as toasts so flows can be tried end to end.
+    const services =
+      runtime.mode === 'mock'
+        ? {
+            notifications: {
+              notify: async ({ toUpns, subject }: { toUpns: string[]; subject: string }) =>
+                toast({ title: `Notification to ${toUpns.join(', ')}`, description: subject, tone: 'info' }),
+            },
+            ...config.services,
+          }
+        : (config.services ?? {})
     return {
+      services,
       ...runtime,
       registeredModules,
       visibleModules: registeredModules.filter((m) => isModuleEnabled(m.id) && can(m.access)),
@@ -112,7 +125,7 @@ function WorkspaceRoot({ config }: { config: WorkspaceConfig }) {
           }
         : undefined,
     }
-  }, [runtime, config, refresh])
+  }, [runtime, config, refresh, toast])
 
   if (state.error && !runtime) {
     return (

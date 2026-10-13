@@ -124,10 +124,33 @@ function Details({ request }: { request: RequestRecord }) {
 }
 
 function Manage({ request, isRequester, onChanged }: { request: RequestRecord; isRequester: boolean; onChanged: () => void }) {
-  const { can, user, audit } = useWorkspace()
+  const { can, user, audit, services, deepLink } = useWorkspace()
   const table = useTable(requestTable)
   const { toast } = useToast()
   const canManage = can(caps.manage)
+
+  // Best effort: a failed notification never fails the save.
+  const notifyChanges = async (changes: Partial<RequestRecord>) => {
+    const notifications = services.notifications
+    if (!notifications) return
+    const link = deepLink(`/requests/${request.id}`)
+    const newAssignee = changes.assigneeUpn?.toLowerCase()
+    try {
+      if (newAssignee && newAssignee !== request.assigneeUpn?.toLowerCase() && newAssignee !== user.upn) {
+        await notifications.notify({ toUpns: [newAssignee], subject: `Assigned to you: ${request.title}`, body: `${user.displayName} assigned you a request.`, link })
+      }
+      if (changes.status && changes.status !== request.status && request.requesterUpn.toLowerCase() !== user.upn) {
+        await notifications.notify({
+          toUpns: [request.requesterUpn],
+          subject: `${statusLabel(changes.status)}: ${request.title}`,
+          body: `${user.displayName} changed the status of your request to ${statusLabel(changes.status)}.`,
+          link,
+        })
+      }
+    } catch (err) {
+      toast({ title: 'Saved, but the notification failed', description: err instanceof Error ? err.message : String(err), tone: 'warning' })
+    }
+  }
   const [status, setStatus] = useState<RequestStatus>(request.status)
   const [assigneeUpn, setAssigneeUpn] = useState(request.assigneeUpn ?? '')
   const [saving, setSaving] = useState(false)
@@ -140,6 +163,7 @@ function Manage({ request, isRequester, onChanged }: { request: RequestRecord; i
       await table.update(request.id, changes)
       await audit({ action, module: 'requests', entity: 'request', recordId: request.id, details: changes })
       toast({ title: 'Request updated', tone: 'success' })
+      await notifyChanges(changes)
       onChanged()
     } catch (err) {
       toast({ title: 'Update failed', description: err instanceof Error ? err.message : String(err), tone: 'danger' })

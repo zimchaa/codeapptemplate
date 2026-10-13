@@ -15,6 +15,7 @@ import {
   type RoleRecord,
 } from '../schema/platform-tables.ts'
 import type { AnyTableDef } from '../schema/types.ts'
+import type { WorkspaceServices } from '../services/types.ts'
 import { getMockHostContext, getPowerAppsHostContext, type HostContext, type WorkspaceUser } from './identity.ts'
 
 export type DataMode = 'mock' | 'powerapps'
@@ -31,6 +32,8 @@ export interface WorkspaceConfig {
   dataSourcesInfo?: unknown
   /** localStorage key for mock data. */
   mockStorageKey?: string
+  /** Connector-backed services (see src/services.ts in the app). */
+  services?: WorkspaceServices
 }
 
 export interface WorkspaceRuntime {

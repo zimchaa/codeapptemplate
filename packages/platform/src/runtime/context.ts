@@ -1,5 +1,6 @@
 import { createContext, useContext } from 'react'
 import type { WorkspaceModule } from '../modules/types.ts'
+import type { WorkspaceServices } from '../services/types.ts'
 import type { WorkspaceRuntime } from './bootstrap.ts'
 
 export interface AuditInput {
@@ -22,6 +23,8 @@ export interface WorkspaceContextValue extends WorkspaceRuntime {
   deepLink(path: string): string
   /** Best-effort audit trail entry (never throws). */
   audit(event: AuditInput): Promise<void>
+  /** Connector-backed services; any of them may be undefined. */
+  services: WorkspaceServices
   /** Reload settings, roles and module states (after admin changes). */
   refresh(): void
   /** Mock mode only: switch persona (reloads). */

@@ -28,8 +28,10 @@ export type { AuditInput, WorkspaceContextValue } from './runtime/context.ts'
 export { mockPersonas } from './runtime/identity.ts'
 export type { WorkspaceUser } from './runtime/identity.ts'
 
-export { useAccess, useData, useTable } from './hooks/index.ts'
+export { useAccess, useData, useServices, useTable } from './hooks/index.ts'
 export type { DataState } from './hooks/index.ts'
+
+export type { NotificationInput, NotificationService, WorkspaceServices } from './services/types.ts'
 
 export { WorkspaceApp } from './shell/WorkspaceApp.tsx'
 export type { WorkspaceAppProps } from './shell/WorkspaceApp.tsx'

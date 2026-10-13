@@ -1,5 +1,6 @@
 import type { PowerConfigLike, WorkspaceConfig } from '@codeapps/platform'
 import { modules } from './modules.ts'
+import { services } from './services.ts'
 
 // Both files are created by the Power Apps CLI (`pa app init`,
 // `pa app add data-source`) and are environment-specific. Globs resolve to
@@ -17,4 +18,5 @@ export const workspaceConfig: WorkspaceConfig = {
   powerConfig: Object.values(powerConfigs)[0],
   dataSourcesInfo: Object.values(dataSourceInfos)[0],
   mockStorageKey: 'ws-mock-data:workspace',
+  services,
 }

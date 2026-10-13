@@ -8,6 +8,11 @@ export function useAccess() {
   return { can, capabilities, roles }
 }
 
+/** Connector-backed services (notifications, ...). Each may be undefined. */
+export function useServices() {
+  return useWorkspace().services
+}
+
 /** A typed client for one table from the active provider (mock or Dataverse). */
 export function useTable<T extends BaseRecord>(def: TableDef<T>): TableClient<T> {
   const { provider } = useWorkspace()
