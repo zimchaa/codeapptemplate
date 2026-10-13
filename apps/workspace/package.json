@@ -8,13 +8,17 @@
     "dev:powerapps": "vite --mode powerapps",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc -b"
+    "typecheck": "tsc -b",
+    "test": "vitest run"
   },
   "dependencies": {
-    "@codeapps/components": "workspace:*",
-    "@codeapps/data": "workspace:*",
+    "@codeapps/module-admin": "workspace:*",
+    "@codeapps/module-announcements": "workspace:*",
+    "@codeapps/module-links": "workspace:*",
+    "@codeapps/module-requests": "workspace:*",
+    "@codeapps/platform": "workspace:*",
+    "@codeapps/ui": "workspace:*",
     "@microsoft/power-apps": "1.5.0",
-    "@placeholder/company-ui": "workspace:*",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },
@@ -24,7 +28,11 @@
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
     "@vitejs/plugin-react": "5.2.0",
+    "autoprefixer": "10.6.1",
+    "postcss": "8.5.30",
+    "tailwindcss": "3.4.19",
     "typescript": "5.9.3",
-    "vite": "7.3.7"
+    "vite": "7.3.7",
+    "vitest": "5.0.4"
   }
 }

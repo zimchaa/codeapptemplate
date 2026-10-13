@@ -15,4 +15,17 @@ export default defineConfig({
   // powerApps() also sets this; repeated here so offline builds match.
   base: './',
   plugins: [react(), ...(hasPowerConfig ? [powerApps()] : [])],
+  build: {
+    rollupOptions: {
+      output: {
+        // Stable vendor chunks: cached across app releases.
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return undefined
+          if (/[\\/](react|react-dom|react-router|scheduler)[\\/]/.test(id)) return 'react'
+          if (id.includes('@radix-ui')) return 'radix'
+          return undefined
+        },
+      },
+    },
+  },
 })
