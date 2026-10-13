@@ -1,22 +1,13 @@
 import { X } from 'lucide-react'
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react'
+import { useCallback, useState, type ReactNode } from 'react'
 import { cn } from '../lib/cn.ts'
+import { ToastContext, type ToastInput, type ToastTone } from './toast-context.ts'
 
-export type ToastTone = 'info' | 'success' | 'warning' | 'danger'
-
-export interface ToastInput {
-  title: string
-  description?: string
-  tone?: ToastTone
-  /** Milliseconds; 0 keeps it until dismissed. Default 5000. */
-  duration?: number
-}
 
 interface ToastItem extends ToastInput {
   id: number
 }
 
-const ToastContext = createContext<((toast: ToastInput) => void) | null>(null)
 
 const toneBar: Record<ToastTone, string> = {
   info: 'border-l-info',
@@ -67,10 +58,4 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       </div>
     </ToastContext.Provider>
   )
-}
-
-export function useToast() {
-  const push = useContext(ToastContext)
-  if (!push) throw new Error('useToast must be used inside <ToastProvider>')
-  return useMemo(() => ({ toast: push }), [push])
 }

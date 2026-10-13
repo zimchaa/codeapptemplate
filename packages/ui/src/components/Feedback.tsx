@@ -2,6 +2,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { AlertTriangle, CheckCircle2, Info, XCircle } from 'lucide-react'
 import type { HTMLAttributes, ReactNode } from 'react'
 import { cn } from '../lib/cn.ts'
+import { initials } from '../lib/initials.ts'
 
 const alertVariants = cva('flex gap-3 rounded-md border p-4 text-sm', {
   variants: {
@@ -89,11 +90,6 @@ export function PageHeader({ title, description, actions, eyebrow, className }: 
       {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
     </div>
   )
-}
-
-export function initials(name: string): string {
-  const parts = name.trim().split(/[\s.@_-]+/).filter(Boolean)
-  return ((parts[0]?.[0] ?? '?') + (parts.length > 1 ? parts.at(-1)![0] : '')).toUpperCase()
 }
 
 export function Avatar({ name, className }: { name: string; className?: string }) {

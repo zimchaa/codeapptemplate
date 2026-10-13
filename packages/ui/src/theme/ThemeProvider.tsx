@@ -1,19 +1,6 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { ThemeContext, type ThemeMode, type ThemeName } from './theme-context.ts'
 
-export const themeNames = ['foundation-red', 'neutral'] as const
-export type ThemeName = (typeof themeNames)[number]
-export type ThemeMode = 'light' | 'dark' | 'system'
-
-interface ThemeState {
-  theme: ThemeName
-  mode: ThemeMode
-  /** The mode actually applied after resolving `system`. */
-  resolvedMode: 'light' | 'dark'
-  setTheme: (theme: ThemeName) => void
-  setMode: (mode: ThemeMode) => void
-}
-
-const ThemeContext = createContext<ThemeState | null>(null)
 const storageKey = 'ws-theme'
 
 function readStored(): { theme?: ThemeName; mode?: ThemeMode } {
@@ -65,10 +52,4 @@ export function ThemeProvider({ children, defaultTheme = 'foundation-red', defau
     [theme, mode, resolvedMode, setTheme, setMode],
   )
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
-}
-
-export function useTheme(): ThemeState {
-  const value = useContext(ThemeContext)
-  if (!value) throw new Error('useTheme must be used inside <ThemeProvider>')
-  return value
 }
