@@ -1,0 +1,121 @@
+/*
+ * Workspace theme tokens.
+ *
+ * Select a theme with attributes on <html>:
+ *   data-theme="foundation-red" | "neutral"
+ *   data-mode="light" | "dark"
+ * (ThemeProvider in src/theme/ThemeProvider.tsx manages these.)
+ *
+ * Colours are "R G B" channel triplets so Tailwind opacity modifiers work.
+ *
+ * foundation-red: a red / charcoal / light-grey palette with compact 6px
+ * radii, in the style of public "foundation" design systems. It ships
+ * WITHOUT any brand name, logo or licensed font. To use a licensed brand
+ * typeface in your own (private) environment, load it with @font-face and
+ * prepend it to --ws-font-sans / --ws-font-heading; see
+ * docs/workspace/ui-and-theming.md.
+ */
+
+:root,
+[data-theme='foundation-red'] {
+  --ws-primary: 230 0 0; /* #E60000 */
+  --ws-primary-hover: 189 0 0; /* #BD0000 */
+  --ws-primary-foreground: 255 255 255;
+  --ws-primary-subtle: 254 236 236;
+  --ws-background: 244 244 244; /* #F4F4F4 */
+  --ws-surface: 255 255 255;
+  --ws-surface-muted: 235 235 235; /* #EBEBEB */
+  --ws-foreground: 37 40 43; /* #25282B */
+  --ws-muted: 102 102 102; /* #666666, AA on white */
+  --ws-border: 216 216 216;
+  --ws-ring: 0 124 146;
+  --ws-success: 0 128 0;
+  --ws-warning: 173 101 0;
+  --ws-danger: 189 0 0;
+  --ws-info: 0 94 165;
+  --ws-sidebar: 37 40 43;
+  --ws-sidebar-foreground: 255 255 255;
+  --ws-sidebar-muted: 190 190 190;
+  --ws-sidebar-active: 230 0 0;
+  --ws-radius: 6px;
+  --ws-shadow-card: 0 1px 2px rgb(0 0 0 / 0.06), 0 2px 8px rgb(0 0 0 / 0.05);
+  --ws-font-sans: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --ws-font-heading: var(--ws-font-sans);
+}
+
+[data-theme='foundation-red'][data-mode='dark'] {
+  --ws-primary: 230 0 0;
+  --ws-primary-hover: 255 51 51;
+  --ws-primary-foreground: 255 255 255;
+  --ws-primary-subtle: 72 16 16;
+  --ws-background: 22 23 25;
+  --ws-surface: 37 40 43;
+  --ws-surface-muted: 51 55 59;
+  --ws-foreground: 244 244 244;
+  --ws-muted: 190 190 190;
+  --ws-border: 70 74 78;
+  --ws-ring: 92 196 214;
+  --ws-success: 96 196 96;
+  --ws-warning: 245 180 70;
+  --ws-danger: 255 102 102;
+  --ws-info: 110 176 235;
+  --ws-sidebar: 15 16 17;
+  --ws-sidebar-foreground: 244 244 244;
+  --ws-sidebar-muted: 160 160 160;
+  --ws-sidebar-active: 230 0 0;
+  --ws-shadow-card: 0 1px 2px rgb(0 0 0 / 0.4);
+}
+
+/* Neutral: Fluent-like blue, light sidebar. Useful as a non-branded default. */
+[data-theme='neutral'] {
+  --ws-primary: 15 108 189; /* #0F6CBD */
+  --ws-primary-hover: 17 94 163;
+  --ws-primary-foreground: 255 255 255;
+  --ws-primary-subtle: 235 243 252;
+  --ws-background: 245 245 245;
+  --ws-surface: 255 255 255;
+  --ws-surface-muted: 240 240 240;
+  --ws-foreground: 36 36 36;
+  --ws-muted: 97 97 97;
+  --ws-border: 219 219 219;
+  --ws-ring: 15 108 189;
+  --ws-success: 16 124 16;
+  --ws-warning: 157 93 0;
+  --ws-danger: 196 49 75;
+  --ws-info: 15 108 189;
+  --ws-sidebar: 250 250 250;
+  --ws-sidebar-foreground: 36 36 36;
+  --ws-sidebar-muted: 97 97 97;
+  --ws-sidebar-active: 15 108 189;
+  --ws-radius: 4px;
+  --ws-shadow-card: 0 1px 2px rgb(0 0 0 / 0.08);
+  --ws-font-sans: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --ws-font-heading: var(--ws-font-sans);
+}
+
+[data-theme='neutral'][data-mode='dark'] {
+  --ws-primary: 71 158 245;
+  --ws-primary-hover: 98 171 245;
+  --ws-primary-foreground: 17 17 17;
+  --ws-primary-subtle: 22 46 74;
+  --ws-background: 26 26 26;
+  --ws-surface: 41 41 41;
+  --ws-surface-muted: 56 56 56;
+  --ws-foreground: 240 240 240;
+  --ws-muted: 180 180 180;
+  --ws-border: 72 72 72;
+  --ws-ring: 71 158 245;
+  --ws-success: 84 176 84;
+  --ws-warning: 240 170 60;
+  --ws-danger: 240 110 130;
+  --ws-info: 71 158 245;
+  --ws-sidebar: 31 31 31;
+  --ws-sidebar-foreground: 240 240 240;
+  --ws-sidebar-muted: 170 170 170;
+  --ws-sidebar-active: 71 158 245;
+  --ws-shadow-card: 0 1px 2px rgb(0 0 0 / 0.4);
+}
+
+[data-mode='dark'] {
+  color-scheme: dark;
+}
