@@ -1,0 +1,68 @@
+name: Provision Dataverse
+
+# Manual only. Creates/updates the workspace tables in an environment and
+# seeds them, using a service principal, for when device-code sign-in is
+# blocked on your laptop or tenant. See docs/workspace/dataverse.md.
+#
+# One-time setup:
+#   - App registration + client secret; add it to the environment as an
+#     Application User with the System Administrator (or System Customizer
+#     + rights to create publishers/solutions) security role.
+#   - Secrets (repository or "power-platform" environment):
+#       DATAVERSE_CLIENT_ID, DATAVERSE_CLIENT_SECRET, DATAVERSE_TENANT_ID
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: Environment URL (https://<org>.crm.dynamics.com)
+        required: true
+      admin:
+        description: UPN to make Administrator in the app
+        required: false
+      prefix:
+        description: Publisher prefix
+        required: true
+        default: spg
+      solution:
+        description: Solution unique name
+        required: true
+        default: WorkspaceApp
+      with_samples:
+        description: Also create demo content
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  provision:
+    runs-on: ubuntu-latest
+    environment: power-platform
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+
+      - name: Install pnpm
+        run: npm install --global "$(node -p "require('./package.json').packageManager")"
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Provision
+        env:
+          DATAVERSE_CLIENT_ID: ${{ secrets.DATAVERSE_CLIENT_ID }}
+          DATAVERSE_CLIENT_SECRET: ${{ secrets.DATAVERSE_CLIENT_SECRET }}
+          DATAVERSE_TENANT_ID: ${{ secrets.DATAVERSE_TENANT_ID }}
+          DATAVERSE_URL: ${{ inputs.url }}
+          DATAVERSE_PREFIX: ${{ inputs.prefix }}
+          DATAVERSE_SOLUTION: ${{ inputs.solution }}
+          WORKSPACE_ADMIN_UPN: ${{ inputs.admin }}
+          WITH_SAMPLES: ${{ inputs.with_samples }}
+        run: |
+          args=()
+          if [ "$WITH_SAMPLES" = "true" ]; then args+=(--with-samples); fi
+          pnpm dataverse:provision "${args[@]}"

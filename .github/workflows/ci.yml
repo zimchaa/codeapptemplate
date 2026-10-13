@@ -43,6 +43,12 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
+      - name: Unit tests
+        run: pnpm test
+
+      - name: Dataverse schema plan (dry run)
+        run: pnpm dataverse:plan
+
       - name: Build
         run: pnpm build
 
