@@ -8,7 +8,7 @@
 // behaves the same on Windows and Linux.
 
 import { spawn } from 'node:child_process'
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { dirname, join, resolve } from 'node:path'
 
@@ -71,8 +71,12 @@ const main = await get('/src/main.tsx')
 const reactDep = /from\s+"(\/node_modules\/\.vite\/deps\/react[^"]*)"/.exec(main)?.[1]
 if (!reactDep) fail('main.tsx was not transformed / react import was not pre-bundled')
 
-const app = await get('/src/App.tsx')
-if (/\btype LoadState\b/.test(app)) fail('App.tsx still contains TypeScript syntax (transform failed)')
+// TypeScript must be stripped: interfaces/type aliases can't survive the transform.
+if (/^\s*(export\s+)?(interface|type)\s+\w+/m.test(main)) fail('main.tsx still contains TypeScript syntax')
+if (existsSync(resolve(appDir, 'src/App.tsx'))) {
+  const app = await get('/src/App.tsx')
+  if (/\btype LoadState\b/.test(app)) fail('App.tsx still contains TypeScript syntax (transform failed)')
+}
 
 const dep = await get(reactDep)
 if (dep.length < 100) fail('pre-bundled react dependency looks empty')

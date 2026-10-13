@@ -12,11 +12,12 @@
     "dev": "pnpm --filter @codeapps/app-template dev",
     "build": "pnpm -r --filter \"./apps/*\" build",
     "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r --if-present test",
     "lint": "eslint .",
     "verify:no-native": "node scripts/verify-no-native.mjs",
-    "smoke:dev": "node scripts/smoke-dev.mjs apps/app-template",
+    "smoke:dev": "node scripts/smoke-dev.mjs apps/app-template && node scripts/smoke-dev.mjs apps/workspace",
     "new-app": "node scripts/new-app.mjs",
-    "check": "pnpm verify:no-native && pnpm lint && pnpm typecheck && pnpm build && pnpm smoke:dev"
+    "check": "pnpm verify:no-native && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm smoke:dev"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
